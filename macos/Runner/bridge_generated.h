@@ -9,6 +9,10 @@ typedef int64_t DartPort;
 
 typedef bool (*DartPostCObjectFnType)(DartPort port_id, void *message);
 
+typedef struct wire_Counter {
+  const void *ptr;
+} wire_Counter;
+
 typedef struct DartCObject *WireSyncReturn;
 
 void store_dart_post_cobject(DartPostCObjectFnType ptr);
@@ -25,12 +29,30 @@ void wire_platform(int64_t port_);
 
 void wire_rust_release_mode(int64_t port_);
 
+void wire_new_counter(int64_t port_);
+
+void wire_increment_counter(int64_t port_, struct wire_Counter counter);
+
+void wire_decrement_counter(int64_t port_, struct wire_Counter counter);
+
+struct wire_Counter new_Counter(void);
+
+void drop_opaque_Counter(const void *ptr);
+
+const void *share_opaque_Counter(const void *ptr);
+
 void free_WireSyncReturn(WireSyncReturn ptr);
 
 static int64_t dummy_method_to_enforce_bundling(void) {
     int64_t dummy_var = 0;
     dummy_var ^= ((int64_t) (void*) wire_platform);
     dummy_var ^= ((int64_t) (void*) wire_rust_release_mode);
+    dummy_var ^= ((int64_t) (void*) wire_new_counter);
+    dummy_var ^= ((int64_t) (void*) wire_increment_counter);
+    dummy_var ^= ((int64_t) (void*) wire_decrement_counter);
+    dummy_var ^= ((int64_t) (void*) new_Counter);
+    dummy_var ^= ((int64_t) (void*) drop_opaque_Counter);
+    dummy_var ^= ((int64_t) (void*) share_opaque_Counter);
     dummy_var ^= ((int64_t) (void*) free_WireSyncReturn);
     dummy_var ^= ((int64_t) (void*) store_dart_post_cobject);
     dummy_var ^= ((int64_t) (void*) get_dart_object);

@@ -2,6 +2,10 @@
 // When adding new code to your project, note that only items used
 // here will be transformed to their Dart equivalents.
 
+use flutter_rust_bridge::RustOpaque;
+
+pub use crate::counter::Counter;
+
 // A plain enum without any fields. This is similar to Dart- or C-style enums.
 // flutter_rust_bridge is capable of generating code for enums with fields
 // (@freezed classes in Dart and tagged unions in C).
@@ -56,4 +60,16 @@ pub fn platform() -> Platform {
 // and they are automatically converted to camelCase on the Dart side.
 pub fn rust_release_mode() -> bool {
     cfg!(not(debug_assertions))
+}
+
+pub fn new_counter() -> RustOpaque<Counter> {
+    RustOpaque::new(Counter::default())
+}
+
+pub fn increment_counter(counter: RustOpaque<Counter>) -> u64 {
+    counter.increment()
+}
+
+pub fn decrement_counter(counter: RustOpaque<Counter>) -> u64 {
+    counter.decrement()
 }

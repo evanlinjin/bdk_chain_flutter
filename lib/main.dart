@@ -53,12 +53,14 @@ class _MyHomePageState extends State<MyHomePage> {
   // in the initState method.
   late Future<Platform> platform;
   late Future<bool> isRelease;
+  late Future<Counter> counter;
 
   @override
   void initState() {
     super.initState();
     platform = api.platform();
     isRelease = api.rustReleaseMode();
+    counter = api.newCounter();
   }
 
   @override
@@ -139,10 +141,74 @@ class _MyHomePageState extends State<MyHomePage> {
                     'Unknown OS';
                 return Text('$text ($release)', style: style);
               },
-            )
+            ),
+            const CounterButton(),
           ],
         ),
       ),
     );
+  }
+}
+
+class CounterButton extends StatefulWidget {
+  const CounterButton({super.key});
+
+  @override
+  State<CounterButton> createState() => _CounterButtonState();
+}
+
+class _CounterButtonState extends State<CounterButton> {
+  Counter? counter;
+  int _count = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    api.newCounter().then((value) => counter = value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(0),
+          child: IconButton(
+            padding: const EdgeInsets.all(0),
+            alignment: Alignment.center,
+            icon: (const Icon(Icons.remove)),
+            color: Colors.red,
+            onPressed: _decrement,
+          ),
+        ),
+        SizedBox(
+          width: 18,
+          child: Text('$_count', textAlign: TextAlign.center),
+        ),
+        Container(
+          padding: const EdgeInsets.all(0),
+          child: IconButton(
+            padding: const EdgeInsets.all(0),
+            alignment: Alignment.center,
+            icon: (const Icon(Icons.add)),
+            color: Colors.green,
+            onPressed: _increment,
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _increment() async {
+    api
+        .incrementCounter(counter: counter!)
+        .then((n) => setState(() => _count = n));
+  }
+
+  void _decrement() async {
+    api
+        .decrementCounter(counter: counter!)
+        .then((n) => setState(() => _count = n));
   }
 }
