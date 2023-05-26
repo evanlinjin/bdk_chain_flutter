@@ -205,6 +205,20 @@ class NativeWire implements FlutterRustBridgeWireBase {
   late final _wire_decrement_counter =
       _wire_decrement_counterPtr.asFunction<void Function(int, wire_Counter)>();
 
+  void wire_do_nothing(
+    int port_,
+  ) {
+    return _wire_do_nothing(
+      port_,
+    );
+  }
+
+  late final _wire_do_nothingPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'wire_do_nothing');
+  late final _wire_do_nothing =
+      _wire_do_nothingPtr.asFunction<void Function(int)>();
+
   wire_Counter new_Counter() {
     return _new_Counter();
   }

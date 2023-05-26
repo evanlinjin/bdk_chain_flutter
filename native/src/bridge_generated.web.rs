@@ -26,6 +26,11 @@ pub fn wire_decrement_counter(port_: MessagePort, counter: JsValue) {
     wire_decrement_counter_impl(port_, counter)
 }
 
+#[wasm_bindgen]
+pub fn wire_do_nothing(port_: MessagePort) {
+    wire_do_nothing_impl(port_)
+}
+
 // Section: allocate functions
 
 // Section: related functions

@@ -26,6 +26,11 @@ pub extern "C" fn wire_decrement_counter(port_: i64, counter: wire_Counter) {
     wire_decrement_counter_impl(port_, counter)
 }
 
+#[no_mangle]
+pub extern "C" fn wire_do_nothing(port_: i64) {
+    wire_do_nothing_impl(port_)
+}
+
 // Section: allocate functions
 
 #[no_mangle]

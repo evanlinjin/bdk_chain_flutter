@@ -2,13 +2,24 @@
 // When adding new code to your project, note that only items used
 // here will be transformed to their Dart equivalents.
 
-use flutter_rust_bridge::RustOpaque;
+use std::sync::RwLock;
+
+use flutter_rust_bridge::{RustOpaque, StreamSink};
+use lazy_static::lazy_static;
 
 pub use crate::counter::Counter;
 
-// A plain enum without any fields. This is similar to Dart- or C-style enums.
-// flutter_rust_bridge is capable of generating code for enums with fields
-// (@freezed classes in Dart and tagged unions in C).
+lazy_static! {
+    pub static ref EVENT_STREAM: RwLock<Option<StreamSink<FfiEvent>>> = RwLock::default();
+}
+
+pub(crate) fn event_stream() -> StreamSink<FfiEvent> {
+    let l = EVENT_STREAM.read().unwrap();
+    l.as_ref().unwrap().clone()
+}
+
+// pub obtain_event_streams()
+
 pub enum Platform {
     Unknown,
     Android,
@@ -20,23 +31,7 @@ pub enum Platform {
     Wasm,
 }
 
-// A function definition in Rust. Similar to Dart, the return type must always be named
-// and is never inferred.
 pub fn platform() -> Platform {
-    // This is a macro, a special expression that expands into code. In Rust, all macros
-    // end with an exclamation mark and can be invoked with all kinds of brackets (parentheses,
-    // brackets and curly braces). However, certain conventions exist, for example the
-    // vector macro is almost always invoked as vec![..].
-    //
-    // The cfg!() macro returns a boolean value based on the current compiler configuration.
-    // When attached to expressions (#[cfg(..)] form), they show or hide the expression at compile time.
-    // Here, however, they evaluate to runtime values, which may or may not be optimized out
-    // by the compiler. A variety of configurations are demonstrated here which cover most of
-    // the modern oeprating systems. Try running the Flutter application on different machines
-    // and see if it matches your expected OS.
-    //
-    // Furthermore, in Rust, the last expression in a function is the return value and does
-    // not have the trailing semicolon. This entire if-else chain forms a single expression.
     if cfg!(windows) {
         Platform::Windows
     } else if cfg!(target_os = "android") {
@@ -73,3 +68,17 @@ pub fn increment_counter(counter: RustOpaque<Counter>) -> u64 {
 pub fn decrement_counter(counter: RustOpaque<Counter>) -> u64 {
     counter.decrement()
 }
+
+#[derive(Debug, Clone)]
+pub enum FfiEvent {
+    ReqOpenPort(String),
+}
+
+#[derive(Debug, Clone)]
+pub struct PortDesc {
+    pub vid: String,
+    pub pid: String,
+    pub serial_number: String,
+}
+
+pub fn do_nothing(events: StreamSink<FfiEvent>) {}

@@ -11,4 +11,5 @@ crate-type = ["cdylib", "staticlib"]
 [dependencies]
 anyhow = "1"
 flutter_rust_bridge = "1"
+lazy_static = "1.4.0"
 bdk_chain = { git = "https://github.com/evanlinjin/bdk.git", rev = "29cbd835a962de677ec5e75f364c2265a7ba26aa" }

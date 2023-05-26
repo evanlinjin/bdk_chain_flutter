@@ -102,6 +102,22 @@ class NativeImpl implements Native {
         argNames: ["counter"],
       );
 
+  Stream<FfiEvent> doNothing({dynamic hint}) {
+    return _platform.executeStream(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_do_nothing(port_),
+      parseSuccessData: _wire2api_ffi_event,
+      constMeta: kDoNothingConstMeta,
+      argValues: [],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kDoNothingConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "do_nothing",
+        argNames: [],
+      );
+
   DropFnType get dropOpaqueCounter => _platform.inner.drop_opaque_Counter;
   ShareFnType get shareOpaqueCounter => _platform.inner.share_opaque_Counter;
   OpaqueTypeFinalizer get CounterFinalizer => _platform.CounterFinalizer;
@@ -115,8 +131,23 @@ class NativeImpl implements Native {
     return Counter.fromRaw(raw[0], raw[1], this);
   }
 
+  String _wire2api_String(dynamic raw) {
+    return raw as String;
+  }
+
   bool _wire2api_bool(dynamic raw) {
     return raw as bool;
+  }
+
+  FfiEvent _wire2api_ffi_event(dynamic raw) {
+    switch (raw[0]) {
+      case 0:
+        return FfiEvent_ReqOpenPort(
+          _wire2api_String(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
   }
 
   int _wire2api_i32(dynamic raw) {
@@ -129,6 +160,14 @@ class NativeImpl implements Native {
 
   int _wire2api_u64(dynamic raw) {
     return castInt(raw);
+  }
+
+  int _wire2api_u8(dynamic raw) {
+    return raw as int;
+  }
+
+  Uint8List _wire2api_uint_8_list(dynamic raw) {
+    return raw as Uint8List;
   }
 }
 

@@ -9,6 +9,9 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:uuid/uuid.dart';
+import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+
+part 'bridge_definitions.freezed.dart';
 
 abstract class Native {
   Future<Platform> platform({dynamic hint});
@@ -31,6 +34,10 @@ abstract class Native {
 
   FlutterRustBridgeTaskConstMeta get kDecrementCounterConstMeta;
 
+  Stream<FfiEvent> doNothing({dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kDoNothingConstMeta;
+
   DropFnType get dropOpaqueCounter;
   ShareFnType get shareOpaqueCounter;
   OpaqueTypeFinalizer get CounterFinalizer;
@@ -48,6 +55,13 @@ class Counter extends FrbOpaque {
 
   @override
   OpaqueTypeFinalizer get staticFinalizer => bridge.CounterFinalizer;
+}
+
+@freezed
+class FfiEvent with _$FfiEvent {
+  const factory FfiEvent.reqOpenPort(
+    String field0,
+  ) = FfiEvent_ReqOpenPort;
 }
 
 enum Platform {

@@ -83,6 +83,16 @@ fn wire_decrement_counter_impl(
         },
     )
 }
+fn wire_do_nothing_impl(port_: MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "do_nothing",
+            port: Some(port_),
+            mode: FfiCallMode::Stream,
+        },
+        move || move |task_callback| Ok(do_nothing(task_callback.stream_sink())),
+    )
+}
 // Section: wrapper structs
 
 // Section: static checks
@@ -107,6 +117,16 @@ where
 }
 
 // Section: impl IntoDart
+
+impl support::IntoDart for FfiEvent {
+    fn into_dart(self) -> support::DartAbi {
+        match self {
+            Self::ReqOpenPort(field0) => vec![0.into_dart(), field0.into_dart()],
+        }
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for FfiEvent {}
 
 impl support::IntoDart for Platform {
     fn into_dart(self) -> support::DartAbi {

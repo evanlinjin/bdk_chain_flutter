@@ -53,6 +53,8 @@ class NativeWasmModule implements WasmModule {
   external dynamic /* void */ wire_decrement_counter(
       NativePortType port_, Object counter);
 
+  external dynamic /* void */ wire_do_nothing(NativePortType port_);
+
   external dynamic /*  */ drop_opaque_Counter(ptr);
 
   external int /* *const c_void */ share_opaque_Counter(ptr);
@@ -77,6 +79,9 @@ class NativeWire extends FlutterRustBridgeWasmWireBase<NativeWasmModule> {
 
   void wire_decrement_counter(NativePortType port_, Object counter) =>
       wasmModule.wire_decrement_counter(port_, counter);
+
+  void wire_do_nothing(NativePortType port_) =>
+      wasmModule.wire_do_nothing(port_);
 
   dynamic /*  */ drop_opaque_Counter(ptr) =>
       wasmModule.drop_opaque_Counter(ptr);
